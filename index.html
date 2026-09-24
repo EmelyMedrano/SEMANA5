@@ -3,61 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fruit Classifier ✨ Semana 5</title>
+    <title>Clasificador de Frutas ✨</title>
     <style>
+        :root {
+            --rosa-principal: #ff7597;
+            --rosa-fuerte: #e04f74;
+            --rosa-pastel: #fff0f3;
+            --coquette-text: #4c1d24;
+            --menta: #2ec4b6;
+            --lavanda: #b5179e;
+        }
+
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, #fff5f5 0%, #fed7e2 100%);
+            background: linear-gradient(135deg, #fff0f3 0%, #fbcfe8 50%, #f472b6 100%);
             margin: 0;
-            padding: 30px 20px;
+            padding: 40px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            color: var(--coquette-text);
         }
         
         h1 { 
-            color: #4a1d24; 
-            font-size: 28px;
-            font-weight: 600;
-            margin-bottom: 25px; 
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px; 
             text-align: center;
-            letter-spacing: 0.5px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+            letter-spacing: 1px;
+            background: linear-gradient(to right, #9d174d, #db2777);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        h1::after {
-            content: ' ✨';
+        .subtitle {
+            font-size: 14px;
+            color: #854d56;
+            margin-bottom: 35px;
+            font-style: italic;
+            text-align: center;
         }
 
         .container {
             display: flex;
             flex-direction: row;
-            gap: 30px;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(219, 39, 119, 0.1);
-            max-width: 800px;
+            gap: 35px;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 35px;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(219, 39, 119, 0.15);
+            max-width: 850px;
             width: 100%;
             box-sizing: border-box;
-            border: 1px solid rgba(255, 182, 193, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.6);
         }
 
-        .panel-cam {
-            flex: 1;
+        .panel-izquierdo {
+            flex: 1.1;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
         }
 
-        .panel-resultados {
+        /* Pestañas Estilo Coquette */
+        .tabs {
+            display: flex;
+            width: 100%;
+            background-color: rgba(255, 241, 242, 0.7);
+            border-radius: 50px;
+            padding: 5px;
+            margin-bottom: 25px;
+            border: 1px solid #fbcfe8;
+        }
+
+        .tab-btn {
             flex: 1;
+            background: none;
+            border: none;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #be185d;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #ff7597 0%, #db2777 100%);
+            color: white;
+            box-shadow: 0 8px 16px rgba(219, 39, 119, 0.25);
+        }
+
+        .tab-content {
+            display: none;
+            width: 100%;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .tab-content.active { display: flex; }
+
+        .visor-medio {
+            width: 100%;
+            max-width: 320px;
+            height: 320px;
+            background-color: #fff1f2;
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px dashed #f9a8d4;
+            position: relative;
+            box-shadow: inset 0 4px 10px rgba(0,0,0,0.03);
+            transition: all 0.3s ease;
+        }
+
+        .visor-medio:hover {
+            border-color: var(--rosa-fuerte);
+            background-color: #ffe4e6;
+        }
+
+        .visor-medio span {
+            color: #9d174d;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            padding: 25px;
+            line-height: 1.5;
+        }
+
+        #img-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 16px;
+            display: none;
+        }
+
+        /* Botones Principales Glamurosos */
+        .btn-principal, .file-label {
+            background: linear-gradient(135deg, #ff7597 0%, #e04f74 100%);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 25px;
+            box-shadow: 0 6px 20px rgba(224, 79, 116, 0.3);
+            transition: all 0.3s ease;
+            text-align: center;
+            display: inline-block;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-principal:hover, .file-label:hover { 
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(224, 79, 116, 0.45);
+        }
+
+        #file-input { display: none; }
+
+        /* Cuadro de Resultados Súper Bonito */
+        .panel-resultados {
+            flex: 0.9;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            background: linear-gradient(180deg, #ffffff 0%, #fff5f6 100%);
+            border-radius: 22px;
+            padding: 25px;
+            border: 1px solid #fbcfe8;
+            box-shadow: 0 10px 30px rgba(157, 23, 77, 0.05);
+            align-self: center;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .panel-resultados h3 {
@@ -65,186 +190,124 @@
             font-size: 18px;
             margin-top: 0;
             margin-bottom: 20px;
-            border-bottom: 2px solid #fbcfe8;
-            padding-bottom: 8px;
-        }
-
-        #webcam-container {
-            width: 280px;
-            height: 280px;
-            background-color: #fff1f2;
-            border-radius: 16px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px dashed #f9a8d4;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
-        }
-
-        #webcam-container span {
-            color: #9d174d;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        button {
-            background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            font-size: 15px;
+            text-align: center;
             font-weight: 600;
-            border-radius: 50px;
-            cursor: pointer;
-            margin-top: 20px;
-            box-shadow: 0 4px 12px rgba(219, 39, 119, 0.3);
-            transition: all 0.3s ease;
-            letter-spacing: 0.3px;
-        }
-
-        button:hover { 
-            background: linear-gradient(135deg, #db2777 0%, #be185d 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(219, 39, 119, 0.4);
-        }
-
-        button:active {
-            transform: translateY(0);
+            letter-spacing: 0.5px;
         }
 
         .clase-prediccion {
-            margin: 18px 0;
-            font-size: 15px;
-            color: #4c1d24;
-            font-weight: 500;
+            margin: 20px 0;
+            font-size: 14px;
+            color: var(--coquette-text);
+            font-weight: 600;
+        }
+
+        .label-text {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
         }
 
         .barra-progreso {
             background-color: #fff1f2;
             border-radius: 9999px;
-            height: 14px;
+            height: 16px;
             width: 100%;
             overflow: hidden;
-            margin-top: 6px;
-            border: 1px solid #fce7f3;
+            border: 1px solid #ffe4e6;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.03);
         }
 
         .progreso-relleno {
             height: 100%;
             width: 0%;
             border-radius: 9999px;
-            transition: width 0.2s ease-out;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Paleta Femenina Cohesionada para los Resultados */
-        .color-0 { background: linear-gradient(90deg, #f43f5e, #fda4af); } /* Maduras: Rosa Encendido / Coral */
-        .color-1 { background: linear-gradient(90deg, #10b981, #a7f3d0); } /* Verdes: Menta Pastel */
-        .color-2 { background: linear-gradient(90deg, #a855f7, #f3e8ff); } /* Malogradas: Lavanda Elegante */
+        /* Colores con vibra del análisis */
+        .color-0 { background: linear-gradient(90deg, #ff4d6d, #ffb3c1); } /* Maduras: Rosa Fresa */
+        .color-1 { background: linear-gradient(90deg, #2ec4b6, #cbf3f0); } /* Verdes: Menta Glow */
+        .color-2 { background: linear-gradient(90deg, #9b5de5, #f1c0e8); } /* Malogradas: Lavanda Pop */
 
-        /* Adaptación perfecta para pantallas de Celulares */
-        @media (max-width: 600px) {
-            .container {
-                flex-direction: column;
-                gap: 25px;
-                padding: 20px;
-            }
-            body {
-                padding: 15px 10px;
-            }
-            #webcam-container {
-                width: 100%;
-                max-width: 280px;
-            }
+        /* Fila de Botones Extras (Más Vina) */
+        .extra-buttons {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+            margin-top: 30px;
+            justify-content: center;
+        }
+
+        .btn-extra {
+            background: white;
+            border: 1px solid #fbcfe8;
+            color: #be185d;
+            padding: 10px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        .btn-extra:hover {
+            background-color: #fff1f2;
+            border-color: #f472b6;
+            transform: translateY(-1px);
+        }
+
+        /* Adaptabilidad de Celular */
+        @media (max-width: 768px) {
+            .container { flex-direction: column; gap: 30px; padding: 25px; }
+            body { padding: 20px 12px; }
+            .visor-medio { max-width: 100%; }
+            .extra-buttons { flex-wrap: wrap; }
+            .btn-extra { flex: 1 1 40%; text-align: center; }
         }
     </style>
 </head>
 <body>
 
-    <h1>SEMANA 5: Clasificador de Frutas</h1>
+    <h1>Clasificador de Frutas ✨</h1>
+    <div class="subtitle">Análisis inteligente con Inteligencia Artificial</div>
 
     <div class="container">
-        <!-- Panel Izquierdo: Cámara -->
-        <div class="panel-cam">
-            <div id="webcam-container"><span>🌸 Cámara lista para iniciar</span></div>
-            <button type="button" onclick="init()">✨ Iniciar Cámara</button>
+        <!-- Panel Izquierdo: Capturas -->
+        <div class="panel-izquierdo">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('cam-tab')">📷 Escaneo en Vivo</button>
+                <button class="tab-btn" onclick="switchTab('file-tab')">📁 Subir Archivo</button>
+            </div>
+
+            <!-- Pestaña Cámara -->
+            <div id="cam-tab" class="tab-content active">
+                <div id="webcam-container" class="visor-medio"><span>🌸 Lista para encender tu cámara en alta definición</span></div>
+                <button type="button" class="btn-principal" onclick="initWebcam()">✨ Activar Escáner</button>
+            </div>
+
+            <!-- Pestaña Archivo -->
+            <div id="file-tab" class="tab-content">
+                <div class="visor-medio">
+                    <span id="file-text">🌸 Arrastra o selecciona una fotografía de tus frutas</span>
+                    <img id="img-preview" alt="Predicción">
+                </div>
+                <label for="file-input" class="file-label">🖼️ Examinar Galería</label>
+                <input type="file" id="file-input" accept="image/*" onchange="previewAndPredict(event)">
+            </div>
         </div>
 
-        <!-- Panel Derecho: Resultados -->
+        <!-- Panel Derecho: Cuadro Hermoso de Resultados -->
         <div class="panel-resultados">
-            <h3>Resultados del Análisis</h3>
-            <div id="label-container"></div>
+            <h3>🎀 Diagnóstico de Calidad</h3>
+            <div id="label-container">
+                <div style="text-align: center; color: #a1626c; font-size: 13px; padding: 40px 0;">
+                    Esperando que actives la cámara o subas una foto para revelar el análisis...
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Librerías de TensorFlow.js y Teachable Machine -->
-    <script src="https://jsdelivr.net"></script>
-    <script src="https://jsdelivr.net"></script>
-
-    <script type="text/javascript">
-        // Tu enlace original de Teachable Machine
-        const URL = "https://withgoogle.com";
-
-        let model, webcam, labelContainer, maxPredictions;
-
-        async function init() {
-            const modelURL = URL + "model.json";
-            const metadataURL = URL + "metadata.json";
-
-            // Cargar el modelo de IA
-            model = await tmImage.load(modelURL, metadataURL);
-            maxPredictions = model.getTotalClasses();
-
-            // Configurar la webcam
-            const flip = true; 
-            // Detectar si es celular para optimizar la visualización
-            const width = window.innerWidth < 600 ? 280 : 300;
-            webcam = new tmImage.Webcam(width, width, flip); 
-            await webcam.setup(); 
-            await webcam.play();
-            window.requestAnimationFrame(loop);
-
-            // Colocar el lienzo de la cámara dentro de nuestro contenedor con estilo
-            const container = document.getElementById("webcam-container");
-            container.innerHTML = "";
-            
-            // Aplicar bordes redondeados al canvas del video
-            webcam.canvas.style.borderRadius = "14px";
-            webcam.canvas.style.width = "100%";
-            webcam.canvas.style.height = "100%";
-            webcam.canvas.style.objectFit = "cover";
-            container.appendChild(webcam.canvas);
-
-            // Limpar y preparar las barras de progreso
-            labelContainer = document.getElementById("label-container");
-            labelContainer.innerHTML = ""; 
-            for (let i = 0; i < maxPredictions; i++) {
-                labelContainer.appendChild(document.createElement("div"));
-            }
-        }
-
-        async function loop() {
-            webcam.update(); 
-            await predict();
-            window.requestAnimationFrame(loop);
-        }
-
-        async function predict() {
-            const prediction = await model.predict(webcam.canvas);
-            for (let i = 0; i < maxPredictions; i++) {
-                const nombreClase = prediction[i].className;
-                const porcentaje = (prediction[i].probability * 100).toFixed(1);
-                
-                labelContainer.childNodes[i].innerHTML = `
-                    <div class="clase-prediccion">
-                        <strong>${nombreClase}:</strong> ${porcentaje}%
-                        <div class="barra-progreso">
-                            <div class="progreso-relleno color-${i}" style="width: ${porcentaje}%"></div>
-                        </div>
-                    </div>
-                `;
-            }
-        }
-    </script>
-</body>
-</html>
+    <!-- Botones extras con más interacción abajo de la app -->
+    <div class="extra-buttons">
