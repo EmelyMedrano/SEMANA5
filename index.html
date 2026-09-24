@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clasificador de Frutas ✨</title>
+    <title>Control de Calidad - Frutas ✨</title>
     <style>
         :root {
             --rosa-principal: #ff7597;
             --rosa-fuerte: #e04f74;
             --rosa-pastel: #fff0f3;
             --coquette-text: #4c1d24;
-            --menta: #2ec4b6;
-            --lavanda: #b5179e;
+            --fbcfe8: #fbcfe8;
         }
 
         body {
@@ -24,78 +23,88 @@
             align-items: center;
             min-height: 100vh;
             color: var(--coquette-text);
+            box-sizing: border-box;
         }
-        
-        h1 { 
-            font-size: 32px;
+
+        /* Etiqueta superior estilo coquette */
+        .badge-lote {
+            background-color: rgba(255, 241, 242, 0.8);
+            color: #be185d;
+            font-size: 11px;
             font-weight: 700;
-            margin-bottom: 5px; 
+            letter-spacing: 1.5px;
+            padding: 6px 16px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
             text-align: center;
-            letter-spacing: 1px;
+            border: 1px solid var(--fbcfe8);
+            box-shadow: 0 2px 10px rgba(219, 39, 119, 0.05);
+        }
+
+        h1 {
+            font-family: 'Georgia', serif;
+            font-size: 34px;
+            font-weight: 700;
+            margin: 0 0 10px 0;
+            text-align: center;
             background: linear-gradient(to right, #9d174d, #db2777);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .subtitle {
+        .instrucciones {
             font-size: 14px;
+            line-height: 1.6;
             color: #854d56;
-            margin-bottom: 35px;
-            font-style: italic;
             text-align: center;
+            max-width: 450px;
+            margin-bottom: 30px;
+            font-style: italic;
         }
 
-        .container {
-            display: flex;
-            flex-direction: row;
-            gap: 35px;
-            background: rgba(255, 255, 255, 0.75);
+        /* Tarjeta principal con efecto cristal */
+        .card-control {
+            background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            padding: 35px;
             border-radius: 24px;
-            box-shadow: 0 15px 35px rgba(219, 39, 119, 0.15);
-            max-width: 850px;
+            padding: 28px;
+            box-shadow: 0 15px 35px rgba(219, 39, 119, 0.12);
+            max-width: 450px;
             width: 100%;
             box-sizing: border-box;
             border: 2px solid rgba(255, 255, 255, 0.6);
         }
 
-        .panel-izquierdo {
-            flex: 1.1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* Pestañas */
+        /* Botones de pestañas */
         .tabs {
             display: flex;
-            width: 100%;
-            background-color: rgba(255, 241, 242, 0.7);
-            border-radius: 50px;
-            padding: 5px;
+            gap: 10px;
             margin-bottom: 25px;
-            border: 1px solid #fbcfe8;
+            background-color: rgba(255, 241, 242, 0.6);
+            border-radius: 50px;
+            padding: 4px;
+            border: 1px solid var(--fbcfe8);
         }
 
         .tab-btn {
             flex: 1;
             background: none;
             border: none;
-            padding: 12px;
-            font-size: 14px;
-            font-weight: 600;
             color: #be185d;
-            cursor: pointer;
+            padding: 12px;
+            font-size: 13px;
+            font-weight: 600;
             border-radius: 50px;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
         .tab-btn.active {
             background: linear-gradient(135deg, #ff7597 0%, #db2777 100%);
             color: white;
-            box-shadow: 0 8px 16px rgba(219, 39, 119, 0.25);
+            box-shadow: 0 6px 14px rgba(219, 39, 119, 0.2);
         }
 
         .tab-content {
@@ -105,204 +114,212 @@
             align-items: center;
         }
 
-        .tab-content.active { display: flex; }
+        .tab-content.active {
+            display: flex;
+        }
 
-        .visor-medio {
+        /* Zona interactiva punteada rosa */
+        .drop-zone {
             width: 100%;
-            max-width: 320px;
-            height: 320px;
+            height: 160px;
             background-color: #fff1f2;
-            border-radius: 20px;
+            border: 2px dashed #f9a8d4;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+
+        .drop-zone:hover {
+            background-color: #ffe4e6;
+            border-color: var(--rosa-fuerte);
+            transform: scale(1.01);
+        }
+
+        .drop-zone p {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: #be185d;
+        }
+
+        .drop-zone span {
+            font-size: 12px;
+            color: #9d174d;
+            margin-top: 4px;
+        }
+
+        /* Visor de imágenes */
+        .visor-marco {
+            width: 100%;
+            height: 240px;
+            background-color: #fff1f2;
+            border-radius: 16px;
             overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 3px dashed #f9a8d4;
-            position: relative;
-            box-shadow: inset 0 4px 10px rgba(0,0,0,0.03);
-            transition: all 0.3s ease;
-        }
-
-        .visor-medio:hover {
-            border-color: var(--rosa-fuerte);
-            background-color: #ffe4e6;
-        }
-
-        .visor-medio span {
-            color: #9d174d;
-            font-size: 14px;
-            font-weight: 500;
-            text-align: center;
-            padding: 25px;
-            line-height: 1.5;
+            border: 1px solid var(--fbcfe8);
         }
 
         #img-preview {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 16px;
             display: none;
         }
 
-        /* Botones */
-        .btn-principal, .file-label {
+        /* Botón glamuroso rosa */
+        .btn-accion {
+            width: 100%;
             background: linear-gradient(135deg, #ff7597 0%, #e04f74 100%);
             color: white;
             border: none;
-            padding: 15px 35px;
+            padding: 14px;
             font-size: 15px;
             font-weight: 600;
             border-radius: 50px;
             cursor: pointer;
-            margin-top: 25px;
-            box-shadow: 0 6px 20px rgba(224, 79, 116, 0.3);
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(224, 79, 116, 0.3);
             transition: all 0.3s ease;
-            text-align: center;
-            display: inline-block;
-            letter-spacing: 0.5px;
         }
 
-        .btn-principal:hover, .file-label:hover { 
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 10px 25px rgba(224, 79, 116, 0.45);
+        .btn-accion:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(224, 79, 116, 0.45);
         }
 
-        #file-input { display: none; }
+        #file-input {
+            display: none;
+        }
 
-        /* Cuadro de Resultados */
-        .panel-resultados {
-            flex: 0.9;
-            display: flex;
-            flex-direction: column;
-            background: linear-gradient(180deg, #ffffff 0%, #fff5f6 100%);
-            border-radius: 22px;
-            padding: 25px;
-            border: 1px solid #fbcfe8;
-            box-shadow: 0 10px 30px rgba(157, 23, 77, 0.05);
-            align-self: center;
+        /* Resultados */
+        .resultados-box {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #f2eae5;
             width: 100%;
-            box-sizing: border-box;
         }
 
-        .panel-resultados h3 {
-            color: #702431;
-            font-size: 18px;
-            margin-top: 0;
-            margin-bottom: 20px;
+        .estado-modelo {
+            font-size: 12px;
+            color: #a1626c;
+            margin-bottom: 15px;
             text-align: center;
-            font-weight: 600;
-            letter-spacing: 0.5px;
+            font-weight: 500;
         }
 
-        .clase-prediccion {
-            margin: 20px 0;
-            font-size: 14px;
-            color: var(--coquette-text);
-            font-weight: 600;
+        .clase-resultado {
+            margin: 16px 0;
         }
 
-        .label-text {
+        .label-info {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 5px;
         }
 
-        .barra-progreso {
+        .barra-bg {
             background-color: #fff1f2;
-            border-radius: 9999px;
-            height: 16px;
-            width: 100%;
+            height: 12px;
+            border-radius: 999px;
             overflow: hidden;
             border: 1px solid #ffe4e6;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.03);
         }
 
-        .progreso-relleno {
+        .barra-fill {
             height: 100%;
             width: 0%;
-            border-radius: 9999px;
+            border-radius: 999px;
             transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .color-0 { background: linear-gradient(90deg, #ff4d6d, #ffb3c1); } 
-        .color-1 { background: linear-gradient(90deg, #2ec4b6, #cbf3f0); } 
-        .color-2 { background: linear-gradient(90deg, #9b5de5, #f1c0e8); } 
-
-        /* Botones Extras */
-        .extra-buttons {
-            display: flex;
-            gap: 12px;
-            width: 100%;
-            margin-top: 30px;
-            justify-content: center;
-        }
-
-        .btn-extra {
-            background: white;
-            border: 1px solid #fbcfe8;
-            color: #be185d;
-            padding: 10px 16px;
-            font-size: 12px;
-            font-weight: 600;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-        }
-
-        .btn-extra:hover {
-            background-color: #fff1f2;
-            border-color: #f472b6;
-            transform: translateY(-1px);
-        }
-
-        @media (max-width: 768px) {
-            .container { flex-direction: column; gap: 30px; padding: 25px; }
-            body { padding: 20px 12px; }
-            .visor-medio { max-width: 100%; }
-            .extra-buttons { flex-wrap: wrap; }
-            .btn-extra { flex: 1 1 40%; text-align: center; }
-        }
+        /* Colores con vibra del análisis */
+        .color-0 { background: linear-gradient(90deg, #ff4d6d, #ffb3c1); } /* Maduras: Rosa Fresa */
+        .color-1 { background: linear-gradient(90deg, #2ec4b6, #cbf3f0); } /* Verdes: Menta Glow */
+        .color-2 { background: linear-gradient(90deg, #9b5de5, #f1c0e8); } /* Malogradas: Lavanda Pop */
     </style>
 </head>
 <body>
 
-    <h1>Clasificador de Frutas ✨</h1>
-    <div class="subtitle">Análisis inteligente con Inteligencia Artificial</div>
+    <div class="badge-lote">Estación de Control · Lote de Manzanas</div>
 
-    <div class="container">
-        <!-- Panel Izquierdo -->
-        <div class="panel-izquierdo">
-            <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab(event, 'cam-tab')">📷 Escaneo en Vivo</button>
-                <button class="tab-btn" onclick="switchTab(event, 'file-tab')">📁 Subir Archivo</button>
+    <h1>¿Buena o mala?</h1>
+    
+    <div class="instrucciones">
+        Sube una foto de una manzana (o usa la cámara) y el modelo entrenado indicará si pasa el control de calidad.
+    </div>
+
+    <div class="card-control">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(event, 'file-tab')">📁 Subir Archivo</button>
+            <button class="tab-btn" onclick="switchTab(event, 'cam-tab')">📷 Usar Cámara</button>
+        </div>
+
+        <!-- Modo Archivo -->
+        <div id="file-tab" class="tab-content active">
+            <div class="drop-zone" onclick="document.getElementById('file-input').click()">
+                <p>🌸 Toca para elegir una foto</p>
+                <span>o arrástrala aquí</span>
             </div>
-
-            <!-- Pestaña Cámara -->
-            <div id="cam-tab" class="tab-content active">
-                <div id="webcam-container" class="visor-medio"><span>🌸 Lista para encender tu cámara en alta definición</span></div>
-                <button type="button" class="btn-principal" onclick="initWebcam()">✨ Activar Escáner</button>
-            </div>
-
-            <!-- Pestaña Archivo -->
-            <div id="file-tab" class="tab-content">
-                <div class="visor-medio">
-                    <span id="file-text">🌸 Selecciona una fotografía de tus frutas</span>
-                    <img id="img-preview" alt="Predicción">
-                </div>
-                <label for="file-input" class="file-label">🖼️ Examinar Galería</label>
-                <input type="file" id="file-input" accept="image/*" onchange="previewAndPredict(event)">
+            <input type="file" id="file-input" accept="image/*" onchange="previewAndPredict(event)">
+            
+            <div class="visor-marco" style="margin-top: 20px; display: none;" id="marco-preview">
+                <img id="img-preview" alt="Predicción">
             </div>
         </div>
 
-        <!-- Panel Derecho -->
-        <div class="panel-resultados">
-            <h3>🎀 Diagnóstico de Calidad</h3>
-            <div id="label-container">
-                <div style="text-align: center; color: #a1626c; font-size: 13px; padding: 40px 0;">
-                    Esperando que actives la cámara o subas una foto para revelar el análisis...
-                </div>
+        <!-- Modo Cámara -->
+        <div id="cam-tab" class="tab-content">
+            <div id="webcam-container" class="visor-marco">
+                <span style="font-size: 13px; color: #9c857f;">🌸 Cámara en reposo.</span>
             </div>
+            <button type="button" class="btn-accion" onclick="initWebcam()">✨ Activar cámara en vivo</button>
+        </div>
+
+        <!-- Resultados -->
+        <div class="resultados-box">
+            <div class="estado-modelo" id="status-text">Modelo listo.</div>
+            <div id="label-container"></div>
         </div>
     </div>
+
+    <script src="https://jsdelivr.net"></script>
+    <script src="https://jsdelivr.net"></script>
+
+    <script type="text/javascript">
+        const URL = "https://withgoogle.com";
+        let model, webcam, labelContainer, maxPredictions;
+        let isWebcamRunning = false;
+
+        const iconos = {
+            "Maduras": "🍓",
+            "Verdes": "🍏",
+            "Malogradas": "👾"
+        };
+
+        async function loadModel() {
+            const modelURL = URL + "model.json";
+            const metadataURL = URL + "metadata.json";
+            model = await tmImage.load(modelURL, metadataURL);
+            maxPredictions = model.getTotalClasses();
+        }
+        loadModel();
+
+        function setupLabels() {
+            labelContainer = document.getElementById("label-container");
+            labelContainer.innerHTML = ""; 
+            for (let i = 0; i < maxPredictions; i++) {
+                labelContainer.appendChild(document.createElement("div"));
+            }
+        }
+
