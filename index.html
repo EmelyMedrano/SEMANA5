@@ -293,10 +293,11 @@
         </div>
     </div>
 
-    <script src="https://jsdelivr.net"></script>
-    <script src="https://jsdelivr.net"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
 
     <script type="text/javascript">
+        // Enlace correcto de tu Inteligencia Artificial en Teachable Machine
         const URL = "https://withgoogle.com";
         let model, webcam, labelContainer, maxPredictions;
         let isWebcamRunning = false;
@@ -319,7 +320,3 @@
             labelContainer = document.getElementById("label-container");
             labelContainer.innerHTML = ""; 
             for (let i = 0; i < maxPredictions; i++) {
-                labelContainer.appendChild(document.createElement("div"));
-            }
-        }
-
