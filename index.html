@@ -68,7 +68,7 @@
             align-items: center;
         }
 
-        /* Pestañas Estilo Coquette */
+        /* Pestañas */
         .tabs {
             display: flex;
             width: 100%;
@@ -145,7 +145,7 @@
             display: none;
         }
 
-        /* Botones Principales Glamurosos */
+        /* Botones */
         .btn-principal, .file-label {
             background: linear-gradient(135deg, #ff7597 0%, #e04f74 100%);
             color: white;
@@ -170,7 +170,7 @@
 
         #file-input { display: none; }
 
-        /* Cuadro de Resultados Súper Bonito */
+        /* Cuadro de Resultados */
         .panel-resultados {
             flex: 0.9;
             display: flex;
@@ -225,12 +225,11 @@
             transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Colores con vibra del análisis */
-        .color-0 { background: linear-gradient(90deg, #ff4d6d, #ffb3c1); } /* Maduras: Rosa Fresa */
-        .color-1 { background: linear-gradient(90deg, #2ec4b6, #cbf3f0); } /* Verdes: Menta Glow */
-        .color-2 { background: linear-gradient(90deg, #9b5de5, #f1c0e8); } /* Malogradas: Lavanda Pop */
+        .color-0 { background: linear-gradient(90deg, #ff4d6d, #ffb3c1); } 
+        .color-1 { background: linear-gradient(90deg, #2ec4b6, #cbf3f0); } 
+        .color-2 { background: linear-gradient(90deg, #9b5de5, #f1c0e8); } 
 
-        /* Fila de Botones Extras (Más Vina) */
+        /* Botones Extras */
         .extra-buttons {
             display: flex;
             gap: 12px;
@@ -258,7 +257,6 @@
             transform: translateY(-1px);
         }
 
-        /* Adaptabilidad de Celular */
         @media (max-width: 768px) {
             .container { flex-direction: column; gap: 30px; padding: 25px; }
             body { padding: 20px 12px; }
@@ -274,11 +272,11 @@
     <div class="subtitle">Análisis inteligente con Inteligencia Artificial</div>
 
     <div class="container">
-        <!-- Panel Izquierdo: Capturas -->
+        <!-- Panel Izquierdo -->
         <div class="panel-izquierdo">
             <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('cam-tab')">📷 Escaneo en Vivo</button>
-                <button class="tab-btn" onclick="switchTab('file-tab')">📁 Subir Archivo</button>
+                <button class="tab-btn active" onclick="switchTab(event, 'cam-tab')">📷 Escaneo en Vivo</button>
+                <button class="tab-btn" onclick="switchTab(event, 'file-tab')">📁 Subir Archivo</button>
             </div>
 
             <!-- Pestaña Cámara -->
@@ -290,7 +288,7 @@
             <!-- Pestaña Archivo -->
             <div id="file-tab" class="tab-content">
                 <div class="visor-medio">
-                    <span id="file-text">🌸 Arrastra o selecciona una fotografía de tus frutas</span>
+                    <span id="file-text">🌸 Selecciona una fotografía de tus frutas</span>
                     <img id="img-preview" alt="Predicción">
                 </div>
                 <label for="file-input" class="file-label">🖼️ Examinar Galería</label>
@@ -298,7 +296,7 @@
             </div>
         </div>
 
-        <!-- Panel Derecho: Cuadro Hermoso de Resultados -->
+        <!-- Panel Derecho -->
         <div class="panel-resultados">
             <h3>🎀 Diagnóstico de Calidad</h3>
             <div id="label-container">
@@ -309,5 +307,6 @@
         </div>
     </div>
 
-    <!-- Botones extras con más interacción abajo de la app -->
     <div class="extra-buttons">
+        <button class="btn-extra" onclick="alert('Tip ✨: Guarda las frutas maduras lejos de las verdes para que duren más tiempo.')">💡 Tip de Conservación</button>
+        <button class="btn-extra" onclick="alert('Info 🍓: Este modelo clasifica manzanas, plátanos y fresas en tiempo récord.')">🔍 Frutas Soportadas</button>
