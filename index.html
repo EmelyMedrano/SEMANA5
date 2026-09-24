@@ -3,134 +3,238 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clasificador de Frutas - Semana 5</title>
+    <title>Fruit Classifier ✨ Semana 5</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f3f4f6;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #fff5f5 0%, #fed7e2 100%);
             margin: 0;
-            padding: 20px;
+            padding: 30px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            min-height: 100vh;
         }
-        h1 { color: #1f2937; margin-bottom: 20px; }
+        
+        h1 { 
+            color: #4a1d24; 
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 25px; 
+            text-align: center;
+            letter-spacing: 0.5px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+        }
+
+        h1::after {
+            content: ' ✨';
+        }
+
         .container {
             display: flex;
+            flex-direction: row;
             gap: 30px;
-            background: white;
-            padding: 24px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(219, 39, 119, 0.1);
             max-width: 800px;
             width: 100%;
+            box-sizing: border-box;
+            border: 1px solid rgba(255, 182, 193, 0.4);
         }
+
         .panel-cam {
             flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
         }
+
         .panel-resultados {
             flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
+
+        .panel-resultados h3 {
+            color: #702431;
+            font-size: 18px;
+            margin-top: 0;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #fbcfe8;
+            padding-bottom: 8px;
+        }
+
         #webcam-container {
-            width: 300px;
-            height: 300px;
-            background-color: #e5e7eb;
-            border-radius: 8px;
+            width: 280px;
+            height: 280px;
+            background-color: #fff1f2;
+            border-radius: 16px;
             overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 2px solid #d1d5db;
+            border: 2px dashed #f9a8d4;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
         }
-        button {
-            background-color: #2563eb;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: background 0.2s;
-        }
-        button:hover { background-color: #1d4ed8; }
-        .clase-prediccion {
-            margin: 12px 0;
-            font-size: 16px;
+
+        #webcam-container span {
+            color: #9d174d;
+            font-size: 14px;
             font-weight: 500;
         }
+
+        button {
+            background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 4px 12px rgba(219, 39, 119, 0.3);
+            transition: all 0.3s ease;
+            letter-spacing: 0.3px;
+        }
+
+        button:hover { 
+            background: linear-gradient(135deg, #db2777 0%, #be185d 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(219, 39, 119, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .clase-prediccion {
+            margin: 18px 0;
+            font-size: 15px;
+            color: #4c1d24;
+            font-weight: 500;
+        }
+
         .barra-progreso {
-            background-color: #e5e7eb;
+            background-color: #fff1f2;
             border-radius: 9999px;
-            height: 12px;
+            height: 14px;
             width: 100%;
             overflow: hidden;
-            margin-top: 4px;
+            margin-top: 6px;
+            border: 1px solid #fce7f3;
         }
+
         .progreso-relleno {
             height: 100%;
             width: 0%;
-            transition: width 0.1s ease;
+            border-radius: 9999px;
+            transition: width 0.2s ease-out;
         }
-         .color-0 { background-color: #ea580c; } /* Frutas Maduras */
-        .color-1 { background-color: #10b981; } /* Frutas Verdes */
-        .color-2 { background-color: #7c3aed; } /* Frutas Malogradas */
+
+        /* Paleta Femenina Cohesionada para los Resultados */
+        .color-0 { background: linear-gradient(90deg, #f43f5e, #fda4af); } /* Maduras: Rosa Encendido / Coral */
+        .color-1 { background: linear-gradient(90deg, #10b981, #a7f3d0); } /* Verdes: Menta Pastel */
+        .color-2 { background: linear-gradient(90deg, #a855f7, #f3e8ff); } /* Malogradas: Lavanda Elegante */
+
+        /* Adaptación perfecta para pantallas de Celulares */
+        @media (max-width: 600px) {
+            .container {
+                flex-direction: column;
+                gap: 25px;
+                padding: 20px;
+            }
+            body {
+                padding: 15px 10px;
+            }
+            #webcam-container {
+                width: 100%;
+                max-width: 280px;
+            }
+        }
     </style>
 </head>
 <body>
+
     <h1>SEMANA 5: Clasificador de Frutas</h1>
+
     <div class="container">
+        <!-- Panel Izquierdo: Cámara -->
         <div class="panel-cam">
-            <div id="webcam-container"><span>Cámara apagada</span></div>
-            <button type="button" onclick="init()">🚀 Iniciar Cámara</button>
+            <div id="webcam-container"><span>🌸 Cámara lista para iniciar</span></div>
+            <button type="button" onclick="init()">✨ Iniciar Cámara</button>
         </div>
+
+        <!-- Panel Derecho: Resultados -->
         <div class="panel-resultados">
-            <h3>Resultados del Análisis:</h3>
+            <h3>Resultados del Análisis</h3>
             <div id="label-container"></div>
         </div>
     </div>
+
+    <!-- Librerías de TensorFlow.js y Teachable Machine -->
     <script src="https://jsdelivr.net"></script>
     <script src="https://jsdelivr.net"></script>
+
     <script type="text/javascript">
-        const URL = "https://teachablemachine.withgoogle.com/models/Gezzx2Ug_/";
+        // Tu enlace original de Teachable Machine
+        const URL = "https://withgoogle.com";
+
         let model, webcam, labelContainer, maxPredictions;
+
         async function init() {
             const modelURL = URL + "model.json";
             const metadataURL = URL + "metadata.json";
+
+            // Cargar el modelo de IA
             model = await tmImage.load(modelURL, metadataURL);
             maxPredictions = model.getTotalClasses();
+
+            // Configurar la webcam
             const flip = true; 
-            webcam = new tmImage.Webcam(300, 300, flip); 
+            // Detectar si es celular para optimizar la visualización
+            const width = window.innerWidth < 600 ? 280 : 300;
+            webcam = new tmImage.Webcam(width, width, flip); 
             await webcam.setup(); 
             await webcam.play();
             window.requestAnimationFrame(loop);
-            document.getElementById("webcam-container").innerHTML = "";
-            document.getElementById("webcam-container").appendChild(webcam.canvas);
+
+            // Colocar el lienzo de la cámara dentro de nuestro contenedor con estilo
+            const container = document.getElementById("webcam-container");
+            container.innerHTML = "";
+            
+            // Aplicar bordes redondeados al canvas del video
+            webcam.canvas.style.borderRadius = "14px";
+            webcam.canvas.style.width = "100%";
+            webcam.canvas.style.height = "100%";
+            webcam.canvas.style.objectFit = "cover";
+            container.appendChild(webcam.canvas);
+
+            // Limpar y preparar las barras de progreso
             labelContainer = document.getElementById("label-container");
             labelContainer.innerHTML = ""; 
             for (let i = 0; i < maxPredictions; i++) {
                 labelContainer.appendChild(document.createElement("div"));
             }
         }
+
         async function loop() {
             webcam.update(); 
             await predict();
             window.requestAnimationFrame(loop);
         }
+
         async function predict() {
             const prediction = await model.predict(webcam.canvas);
             for (let i = 0; i < maxPredictions; i++) {
                 const nombreClase = prediction[i].className;
                 const porcentaje = (prediction[i].probability * 100).toFixed(1);
                 
-                // Mostrar nombres de clases y barras dinámicas
                 labelContainer.childNodes[i].innerHTML = `
                     <div class="clase-prediccion">
                         <strong>${nombreClase}:</strong> ${porcentaje}%
