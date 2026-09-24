@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,6 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
 
     <style>
+
         * {
             box-sizing: border-box;
         }
@@ -22,15 +24,13 @@
             font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #dff5df, #f8fff8);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+            padding: 30px 15px;
         }
 
         .contenedor {
             width: 100%;
-            max-width: 650px;
+            max-width: 750px;
+            margin: auto;
             background: white;
             padding: 30px;
             border-radius: 20px;
@@ -48,20 +48,83 @@
             margin-bottom: 25px;
         }
 
+        /* BOTONES */
+
+        .botones {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
         button {
             background-color: #2e7d32;
             color: white;
             border: none;
-            padding: 14px 25px;
+            padding: 13px 22px;
             border-radius: 10px;
             font-size: 16px;
             cursor: pointer;
-            margin: 8px;
         }
 
         button:hover {
             background-color: #1b5e20;
         }
+
+        .boton-rojo {
+            background-color: #c62828;
+        }
+
+        .boton-rojo:hover {
+            background-color: #8e0000;
+        }
+
+        /* ZONA PARA ARRASTRAR */
+
+        .zona-drop {
+            border: 3px dashed #4caf50;
+            border-radius: 15px;
+            padding: 35px 20px;
+            margin: 20px 0;
+            background-color: #f8fff8;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .zona-drop:hover {
+            background-color: #e8f5e9;
+        }
+
+        .zona-drop.activa {
+            background-color: #c8e6c9;
+            border-color: #1b5e20;
+        }
+
+        .zona-drop p {
+            margin: 8px;
+            color: #555;
+        }
+
+        .icono-subir {
+            font-size: 45px;
+        }
+
+        /* IMAGEN */
+
+        #imagen-container {
+            margin-top: 20px;
+        }
+
+        #imagen {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 15px;
+            display: none;
+            margin: auto;
+        }
+
+        /* CÁMARA */
 
         #webcam-container {
             margin-top: 20px;
@@ -74,17 +137,40 @@
             max-width: 100%;
         }
 
+        /* RESULTADO */
+
         #resultado {
             margin-top: 25px;
             padding: 20px;
-            border-radius: 12px;
+            border-radius: 15px;
             background-color: #f1f8e9;
         }
 
         #resultado h2 {
-            margin: 0;
+            margin-top: 0;
+        }
+
+        #resultadoTexto {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .resultado-verde {
+            background-color: #e8f5e9 !important;
             color: #2e7d32;
         }
+
+        .resultado-amarillo {
+            background-color: #fff8e1 !important;
+            color: #f57f17;
+        }
+
+        .resultado-rojo {
+            background-color: #ffebee !important;
+            color: #c62828;
+        }
+
+        /* PREDICCIONES */
 
         #predicciones {
             margin-top: 20px;
@@ -92,7 +178,7 @@
         }
 
         .prediccion {
-            margin: 12px 0;
+            margin: 15px 0;
         }
 
         .barra {
@@ -101,6 +187,7 @@
             background-color: #ddd;
             border-radius: 10px;
             overflow: hidden;
+            margin-top: 5px;
         }
 
         .progreso {
@@ -110,249 +197,696 @@
         }
 
         #estado {
-            margin-top: 15px;
+            margin: 15px;
             color: #666;
         }
+
+        .oculto {
+            display: none !important;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 600px) {
+
+            .contenedor {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+
+            button {
+                width: 100%;
+            }
+
+        }
+
     </style>
 </head>
 
+
 <body>
 
-    <div class="contenedor">
+<div class="contenedor">
 
-        <h1>🍎 Evaluación de Frutas</h1>
+    <h1>🍎 Evaluación de Frutas</h1>
 
-        <p class="descripcion">
-            Coloca una fruta frente a la cámara y el sistema determinará
-            su estado.
-        </p>
+    <p class="descripcion">
+        Sube una imagen, arrástrala al área indicada o utiliza la cámara
+        para evaluar el estado de la fruta.
+    </p>
+
+
+    <!-- BOTONES -->
+
+    <div class="botones">
+
+        <button onclick="abrirArchivo()">
+            🖼️ Subir imagen
+        </button>
 
         <button onclick="iniciarCamara()">
-            📷 Iniciar cámara
+            📷 Usar cámara
         </button>
 
-        <button onclick="detenerCamara()">
+        <button
+            class="boton-rojo"
+            onclick="detenerCamara()">
             ⛔ Detener cámara
         </button>
-
-        <div id="estado">
-            Presiona "Iniciar cámara" para comenzar.
-        </div>
-
-        <div id="webcam-container"></div>
-
-        <div id="resultado">
-            <h2>Resultado</h2>
-            <p id="resultadoTexto">
-                Esperando una fruta...
-            </p>
-        </div>
-
-        <div id="predicciones"></div>
 
     </div>
 
 
-    <script>
+    <!-- INPUT OCULTO -->
 
-        // ==========================================
-        // CONFIGURACIÓN DEL MODELO
-        // ==========================================
-
-        const URL =
-            "https://teachablemachine.withgoogle.com/models/Gezzx2Ug_/";
-
-        let model;
-        let webcam;
-        let maxPredictions;
-        let ejecutando = false;
+    <input
+        type="file"
+        id="archivo"
+        accept="image/*"
+        style="display:none"
+        onchange="procesarArchivo(event)"
+    >
 
 
-        // ==========================================
-        // INICIAR CÁMARA
-        // ==========================================
+    <!-- ZONA DRAG & DROP -->
 
-        async function iniciarCamara() {
+    <div
+        id="zona-drop"
+        class="zona-drop"
+    >
 
-            try {
+        <div class="icono-subir">
+            📤
+        </div>
 
-                document.getElementById("estado").innerText =
-                    "Cargando modelo...";
+        <h3>
+            Arrastra una imagen aquí
+        </h3>
 
-                // Ubicación del modelo
-                const modelURL = URL + "model.json";
-                const metadataURL = URL + "metadata.json";
+        <p>
+            o haz clic para seleccionar una imagen
+        </p>
 
-                // Cargar modelo
-                model = await tmImage.load(
-                    modelURL,
-                    metadataURL
-                );
+        <p>
+            JPG, PNG, JPEG, WEBP
+        </p>
 
-                maxPredictions = model.getTotalClasses();
+    </div>
 
-                // Crear cámara
-                webcam = new tmImage.Webcam(
+
+    <div id="estado">
+        Esperando una imagen o cámara...
+    </div>
+
+
+    <!-- IMAGEN SUBIDA -->
+
+    <div id="imagen-container">
+
+        <img
+            id="imagen"
+            alt="Imagen de la fruta"
+        >
+
+    </div>
+
+
+    <!-- CÁMARA -->
+
+    <div id="webcam-container"></div>
+
+
+    <!-- RESULTADO -->
+
+    <div id="resultado">
+
+        <h2>Resultado</h2>
+
+        <p id="resultadoTexto">
+            Esperando una fruta...
+        </p>
+
+    </div>
+
+
+    <!-- PORCENTAJES -->
+
+    <div id="predicciones"></div>
+
+</div>
+
+
+<script>
+
+    // =====================================================
+    // CONFIGURACIÓN
+    // =====================================================
+
+    const URL =
+        "https://teachablemachine.withgoogle.com/models/Gezzx2Ug_/";
+
+    let model;
+
+    let webcam;
+
+    let maxPredictions;
+
+    let ejecutando = false;
+
+
+    // =====================================================
+    // CARGAR MODELO
+    // =====================================================
+
+    async function cargarModelo() {
+
+        if (model) {
+            return;
+        }
+
+        document.getElementById("estado").innerText =
+            "Cargando modelo de inteligencia artificial...";
+
+        const modelURL =
+            URL + "model.json";
+
+        const metadataURL =
+            URL + "metadata.json";
+
+        model = await tmImage.load(
+            modelURL,
+            metadataURL
+        );
+
+        maxPredictions =
+            model.getTotalClasses();
+
+    }
+
+
+    // =====================================================
+    // ABRIR SELECTOR DE ARCHIVOS
+    // =====================================================
+
+    function abrirArchivo() {
+
+        document
+            .getElementById("archivo")
+            .click();
+
+    }
+
+
+    // =====================================================
+    // PROCESAR ARCHIVO
+    // =====================================================
+
+    async function procesarArchivo(event) {
+
+        const archivo =
+            event.target.files[0];
+
+        if (!archivo) {
+            return;
+        }
+
+        evaluarImagen(archivo);
+
+    }
+
+
+    // =====================================================
+    // EVALUAR IMAGEN
+    // =====================================================
+
+    async function evaluarImagen(archivo) {
+
+        try {
+
+            // Detener cámara si estaba funcionando
+            detenerCamara();
+
+            await cargarModelo();
+
+            document.getElementById("estado").innerText =
+                "Analizando imagen...";
+
+
+            const imagen =
+                document.getElementById("imagen");
+
+
+            const url =
+                URL.createObjectURL(archivo);
+
+
+            imagen.src = url;
+
+            imagen.style.display = "block";
+
+
+            // Esperar a que la imagen cargue
+
+            imagen.onload = async function () {
+
+                const predicciones =
+                    await model.predict(imagen);
+
+                mostrarResultados(predicciones);
+
+            };
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            document.getElementById("estado").innerText =
+                "Ocurrió un error al analizar la imagen.";
+
+        }
+
+    }
+
+
+    // =====================================================
+    // MOSTRAR RESULTADOS
+    // =====================================================
+
+    function mostrarResultados(predicciones) {
+
+        let claseMayor = "";
+
+        let porcentajeMayor = 0;
+
+
+        const contenedor =
+            document.getElementById("predicciones");
+
+        contenedor.innerHTML = "";
+
+
+        for (
+            let i = 0;
+            i < predicciones.length;
+            i++
+        ) {
+
+            const nombre =
+                predicciones[i].className;
+
+            const porcentaje =
+                predicciones[i].probability * 100;
+
+
+            // Encontrar mayor probabilidad
+
+            if (
+                predicciones[i].probability >
+                porcentajeMayor
+            ) {
+
+                porcentajeMayor =
+                    predicciones[i].probability;
+
+                claseMayor =
+                    nombre;
+
+            }
+
+
+            // Crear barra
+
+            const div =
+                document.createElement("div");
+
+            div.className =
+                "prediccion";
+
+
+            div.innerHTML = `
+
+                <strong>
+                    ${nombre}
+                    :
+                    ${porcentaje.toFixed(2)}%
+                </strong>
+
+                <div class="barra">
+
+                    <div
+                        class="progreso"
+                        style="width:${porcentaje}%">
+                    </div>
+
+                </div>
+
+            `;
+
+
+            contenedor.appendChild(div);
+
+        }
+
+
+        // Mostrar resultado principal
+
+        mostrarResultadoPrincipal(
+            claseMayor,
+            porcentajeMayor
+        );
+
+
+        document.getElementById("estado").innerText =
+            "Evaluación completada.";
+
+    }
+
+
+    // =====================================================
+    // RESULTADO PRINCIPAL
+    // =====================================================
+
+    function mostrarResultadoPrincipal(
+        clase,
+        confianza
+    ) {
+
+        const resultado =
+            document.getElementById("resultado");
+
+        const texto =
+            document.getElementById("resultadoTexto");
+
+
+        // Quitar colores anteriores
+
+        resultado.classList.remove(
+            "resultado-verde",
+            "resultado-amarillo",
+            "resultado-rojo"
+        );
+
+
+        const nombre =
+            clase.toLowerCase();
+
+
+        // Detectar categoría
+
+        if (
+            nombre.includes("malograd") ||
+            nombre.includes("podrid") ||
+            nombre.includes("dañad")
+        ) {
+
+            resultado.classList.add(
+                "resultado-rojo"
+            );
+
+            texto.innerHTML =
+                "🔴 " + clase +
+                "<br>" +
+                "<small>Confianza: " +
+                (confianza * 100).toFixed(2) +
+                "%</small>";
+
+        }
+
+        else if (
+            nombre.includes("verde")
+        ) {
+
+            resultado.classList.add(
+                "resultado-verde"
+            );
+
+            texto.innerHTML =
+                "🟢 " + clase +
+                "<br>" +
+                "<small>Confianza: " +
+                (confianza * 100).toFixed(2) +
+                "%</small>";
+
+        }
+
+        else {
+
+            resultado.classList.add(
+                "resultado-amarillo"
+            );
+
+            texto.innerHTML =
+                "🟡 " + clase +
+                "<br>" +
+                "<small>Confianza: " +
+                (confianza * 100).toFixed(2) +
+                "%</small>";
+
+        }
+
+    }
+
+
+    // =====================================================
+    // INICIAR CÁMARA
+    // =====================================================
+
+    async function iniciarCamara() {
+
+        try {
+
+            await cargarModelo();
+
+
+            document.getElementById("estado").innerText =
+                "Solicitando acceso a la cámara...";
+
+
+            webcam =
+                new tmImage.Webcam(
                     400,
                     400,
                     true
                 );
 
-                await webcam.setup();
 
-                await webcam.play();
+            await webcam.setup();
 
-                ejecutando = true;
-
-                document
-                    .getElementById("webcam-container")
-                    .innerHTML = "";
-
-                document
-                    .getElementById("webcam-container")
-                    .appendChild(webcam.canvas);
-
-                document.getElementById("estado").innerText =
-                    "Cámara activa. Coloca una fruta frente a la cámara.";
-
-                // Iniciar reconocimiento
-                window.requestAnimationFrame(loop);
-
-            } catch (error) {
-
-                console.error(error);
-
-                document.getElementById("estado").innerText =
-                    "No se pudo iniciar la cámara. Verifica los permisos.";
-            }
-        }
+            await webcam.play();
 
 
-        // ==========================================
-        // BUCLE DE RECONOCIMIENTO
-        // ==========================================
-
-        async function loop() {
-
-            if (!ejecutando) {
-                return;
-            }
-
-            webcam.update();
-
-            await predecir();
-
-            window.requestAnimationFrame(loop);
-        }
+            ejecutando = true;
 
 
-        // ==========================================
-        // REALIZAR PREDICCIÓN
-        // ==========================================
+            // Ocultar imagen
 
-        async function predecir() {
-
-            const predicciones =
-                await model.predict(webcam.canvas);
-
-            let claseMayor = "";
-            let porcentajeMayor = 0;
-
-            const contenedor =
-                document.getElementById("predicciones");
-
-            contenedor.innerHTML = "";
-
-            for (
-                let i = 0;
-                i < maxPredictions;
-                i++
-            ) {
-
-                const nombre =
-                    predicciones[i].className;
-
-                const porcentaje =
-                    predicciones[i].probability * 100;
+            document
+                .getElementById("imagen")
+                .style.display = "none";
 
 
-                // Buscar la clase con mayor probabilidad
+            // Mostrar cámara
 
-                if (
-                    predicciones[i].probability >
-                    porcentajeMayor
-                ) {
-
-                    porcentajeMayor =
-                        predicciones[i].probability;
-
-                    claseMayor =
-                        nombre;
-                }
+            document
+                .getElementById("webcam-container")
+                .innerHTML = "";
 
 
-                // Crear resultado visual
+            document
+                .getElementById("webcam-container")
+                .appendChild(
+                    webcam.canvas
+                );
 
-                const div =
-                    document.createElement("div");
-
-                div.className = "prediccion";
-
-                div.innerHTML = `
-                    <strong>
-                        ${nombre}: ${porcentaje.toFixed(2)}%
-                    </strong>
-
-                    <div class="barra">
-                        <div
-                            class="progreso"
-                            style="width: ${porcentaje}%">
-                        </div>
-                    </div>
-                `;
-
-                contenedor.appendChild(div);
-            }
-
-
-            // Mostrar resultado principal
-
-            document.getElementById("resultadoTexto").innerHTML =
-                `<strong>${claseMayor}</strong>
-                <br>
-                Confianza:
-                ${(porcentajeMayor * 100).toFixed(2)}%`;
-        }
-
-
-        // ==========================================
-        // DETENER CÁMARA
-        // ==========================================
-
-        function detenerCamara() {
-
-            ejecutando = false;
-
-            if (webcam) {
-
-                webcam.stop();
-
-                document
-                    .getElementById("webcam-container")
-                    .innerHTML = "";
-            }
 
             document.getElementById("estado").innerText =
-                "Cámara detenida.";
+                "Cámara activa. Coloca la fruta frente a la cámara.";
 
-            document.getElementById("resultadoTexto").innerText =
-                "Esperando una fruta...";
 
-            document.getElementById("predicciones").innerHTML =
-                "";
+            window.requestAnimationFrame(
+                loop
+            );
+
         }
 
-    </script>
+        catch (error) {
+
+            console.error(error);
+
+            document.getElementById("estado").innerText =
+                "No se pudo acceder a la cámara.";
+
+        }
+
+    }
+
+
+    // =====================================================
+    // LOOP CÁMARA
+    // =====================================================
+
+    async function loop() {
+
+        if (!ejecutando) {
+            return;
+        }
+
+
+        webcam.update();
+
+
+        const predicciones =
+            await model.predict(
+                webcam.canvas
+            );
+
+
+        mostrarResultados(
+            predicciones
+        );
+
+
+        window.requestAnimationFrame(
+            loop
+        );
+
+    }
+
+
+    // =====================================================
+    // DETENER CÁMARA
+    // =====================================================
+
+    function detenerCamara() {
+
+        ejecutando = false;
+
+
+        if (webcam) {
+
+            webcam.stop();
+
+            webcam = null;
+
+        }
+
+
+        document
+            .getElementById("webcam-container")
+            .innerHTML = "";
+
+    }
+
+
+    // =====================================================
+    // DRAG & DROP
+    // =====================================================
+
+    const zona =
+        document.getElementById(
+            "zona-drop"
+        );
+
+
+    // Permitir hacer clic
+
+    zona.addEventListener(
+        "click",
+        function() {
+
+            abrirArchivo();
+
+        }
+    );
+
+
+    // Evitar comportamiento por defecto
+
+    zona.addEventListener(
+        "dragover",
+        function(event) {
+
+            event.preventDefault();
+
+            zona.classList.add(
+                "activa"
+            );
+
+        }
+    );
+
+
+    // Quitar efecto
+
+    zona.addEventListener(
+        "dragleave",
+        function() {
+
+            zona.classList.remove(
+                "activa"
+            );
+
+        }
+    );
+
+
+    // Soltar archivo
+
+    zona.addEventListener(
+        "drop",
+        function(event) {
+
+            event.preventDefault();
+
+            zona.classList.remove(
+                "activa"
+            );
+
+
+            const archivos =
+                event.dataTransfer.files;
+
+
+            if (
+                archivos.length > 0
+            ) {
+
+                const archivo =
+                    archivos[0];
+
+
+                if (
+                    archivo.type.startsWith(
+                        "image/"
+                    )
+                ) {
+
+                    evaluarImagen(
+                        archivo
+                    );
+
+                }
+
+                else {
+
+                    document.getElementById(
+                        "estado"
+                    ).innerText =
+                        "Por favor, selecciona una imagen.";
+
+                }
+
+            }
+
+        }
+    );
+
+</script>
 
 </body>
+
 </html>
