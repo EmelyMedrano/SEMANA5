@@ -40,10 +40,12 @@
 
         h1 {
             color: #2e7d32;
+            margin-bottom: 10px;
         }
 
         .descripcion {
             color: #555;
+            margin-bottom: 25px;
         }
 
         .botones {
@@ -51,11 +53,11 @@
             justify-content: center;
             gap: 10px;
             flex-wrap: wrap;
-            margin: 25px 0;
+            margin-bottom: 20px;
         }
 
         button {
-            background: #2e7d32;
+            background-color: #2e7d32;
             color: white;
             border: none;
             padding: 13px 22px;
@@ -65,39 +67,43 @@
         }
 
         button:hover {
-            background: #1b5e20;
+            background-color: #1b5e20;
         }
 
-        .rojo {
-            background: #c62828;
+        .boton-rojo {
+            background-color: #c62828;
         }
 
-        .rojo:hover {
-            background: #8e0000;
+        .boton-rojo:hover {
+            background-color: #8e0000;
         }
 
-        /* ZONA DE ARRASTRAR */
+        /* ZONA PARA ARRASTRAR */
 
         .zona-drop {
             border: 3px dashed #4caf50;
             border-radius: 15px;
             padding: 35px 20px;
             margin: 20px 0;
-            background: #f8fff8;
+            background-color: #f8fff8;
             cursor: pointer;
             transition: 0.3s;
         }
 
         .zona-drop:hover {
-            background: #e8f5e9;
+            background-color: #e8f5e9;
         }
 
         .zona-drop.activa {
-            background: #c8e6c9;
+            background-color: #c8e6c9;
             border-color: #1b5e20;
         }
 
-        .icono {
+        .zona-drop h3 {
+            color: #2e7d32;
+        }
+
+        .icono-subir {
             font-size: 45px;
         }
 
@@ -107,11 +113,11 @@
             max-width: 100%;
             max-height: 400px;
             border-radius: 15px;
-            margin-top: 20px;
             display: none;
+            margin: 20px auto;
         }
 
-        /* CANVAS DE CÁMARA */
+        /* CÁMARA */
 
         #webcam-container {
             margin-top: 20px;
@@ -130,7 +136,11 @@
             margin-top: 25px;
             padding: 20px;
             border-radius: 15px;
-            background: #f1f8e9;
+            background-color: #f1f8e9;
+        }
+
+        #resultado h2 {
+            margin-top: 0;
         }
 
         #resultadoTexto {
@@ -138,22 +148,22 @@
             font-weight: bold;
         }
 
-        .verde {
-            background: #e8f5e9 !important;
+        .resultado-verde {
+            background-color: #e8f5e9 !important;
             color: #2e7d32;
         }
 
-        .amarillo {
-            background: #fff8e1 !important;
+        .resultado-amarillo {
+            background-color: #fff8e1 !important;
             color: #f57f17;
         }
 
-        .malograda {
-            background: #ffebee !important;
+        .resultado-rojo {
+            background-color: #ffebee !important;
             color: #c62828;
         }
 
-        /* PORCENTAJES */
+        /* PREDICCIONES */
 
         #predicciones {
             margin-top: 20px;
@@ -165,9 +175,9 @@
         }
 
         .barra {
-            height: 20px;
             width: 100%;
-            background: #ddd;
+            height: 20px;
+            background-color: #ddd;
             border-radius: 10px;
             overflow: hidden;
             margin-top: 5px;
@@ -175,28 +185,33 @@
 
         .progreso {
             height: 100%;
-            background: #4caf50;
+            background-color: #4caf50;
             border-radius: 10px;
+            transition: width 0.3s;
         }
 
         #estado {
-            color: #666;
             margin: 15px;
+            color: #666;
         }
 
         #error {
             color: #c62828;
-            background: #ffebee;
+            background-color: #ffebee;
             padding: 12px;
             border-radius: 10px;
             display: none;
             margin-top: 15px;
         }
 
-        @media(max-width:600px) {
+        @media (max-width: 600px) {
 
             .contenedor {
                 padding: 20px;
+            }
+
+            h1 {
+                font-size: 25px;
             }
 
             button {
@@ -212,14 +227,13 @@
 
 <body>
 
-
 <div class="contenedor">
 
     <h1>🍎 Evaluación de Frutas</h1>
 
     <p class="descripcion">
         Sube una imagen, arrástrala al área indicada
-        o utiliza la cámara para evaluar la fruta.
+        o utiliza la cámara para evaluar el estado de la fruta.
     </p>
 
 
@@ -235,10 +249,16 @@
             📷 Usar cámara
         </button>
 
+        <button
+            class="boton-rojo"
+            onclick="detenerCamara()">
+            ⛔ Detener cámara
+        </button>
+
     </div>
 
 
-    <!-- INPUT -->
+    <!-- INPUT DE IMAGEN -->
 
     <input
         type="file"
@@ -248,11 +268,13 @@
     >
 
 
-    <!-- DRAG AND DROP -->
+    <!-- ZONA DRAG AND DROP -->
 
-    <div id="zonaDrop" class="zona-drop">
+    <div
+        id="zonaDrop"
+        class="zona-drop">
 
-        <div class="icono">
+        <div class="icono-subir">
             📤
         </div>
 
@@ -261,7 +283,7 @@
         </h3>
 
         <p>
-            También puedes hacer clic para seleccionar una imagen
+            o haz clic para seleccionar una imagen
         </p>
 
         <p>
@@ -271,14 +293,19 @@
     </div>
 
 
+    <!-- ESTADO -->
+
     <p id="estado">
         Esperando una imagen...
     </p>
 
 
-    <!-- IMAGEN -->
+    <!-- IMAGEN SUBIDA -->
 
-    <img id="imagen" alt="Fruta">
+    <img
+        id="imagen"
+        alt="Imagen de la fruta"
+    >
 
 
     <!-- CÁMARA -->
@@ -299,7 +326,7 @@
     </div>
 
 
-    <!-- PREDICCIONES -->
+    <!-- PORCENTAJES -->
 
     <div id="predicciones"></div>
 
@@ -308,17 +335,16 @@
 
     <div id="error"></div>
 
-
 </div>
 
 
 <script>
 
     // =====================================================
-    // MODELO DE TEACHABLE MACHINE
+    // CONFIGURACIÓN DEL MODELO
     // =====================================================
 
-    const URL =
+    const MODEL_URL =
         "https://teachablemachine.withgoogle.com/models/Gezzx2Ug_/";
 
 
@@ -380,15 +406,16 @@
             return;
         }
 
+
         estado.innerText =
             "Cargando modelo de inteligencia artificial...";
 
 
         const modelURL =
-            URL + "model.json";
+            MODEL_URL + "model.json";
 
         const metadataURL =
-            URL + "metadata.json";
+            MODEL_URL + "metadata.json";
 
 
         model = await tmImage.load(
@@ -408,6 +435,11 @@
         console.log(
             "Número de clases:",
             maxPredictions
+        );
+
+        console.log(
+            "Clases:",
+            model.getClassLabels()
         );
 
     }
@@ -453,8 +485,6 @@
                 "none";
 
 
-            // Comprobar que sea imagen
-
             if (!file.type.startsWith("image/")) {
 
                 throw new Error(
@@ -478,21 +508,21 @@
                 "Cargando imagen...";
 
 
-            // Crear URL
+            // Crear URL de la imagen
 
-            const url =
-                URL.createObjectURL(file);
+            const imagenURL =
+                window.URL.createObjectURL(file);
 
 
-            // Asignar imagen
+            imagen.src =
+                imagenURL;
 
-            imagen.src = url;
 
             imagen.style.display =
                 "block";
 
 
-            // Esperar carga
+            // Esperar a que cargue
 
             await new Promise(
                 function(resolve, reject) {
@@ -514,7 +544,7 @@
 
 
             estado.innerText =
-                "Analizando fruta...";
+                "🤖 Analizando fruta...";
 
 
             // =================================================
@@ -536,9 +566,11 @@
                 imagen.naturalHeight;
 
 
-            canvas.width = ancho;
+            canvas.width =
+                ancho;
 
-            canvas.height = alto;
+            canvas.height =
+                alto;
 
 
             contexto.drawImage(
@@ -551,7 +583,7 @@
 
 
             // =================================================
-            // PREDICCIÓN
+            // REALIZAR PREDICCIÓN
             // =================================================
 
             const predicciones =
@@ -567,9 +599,11 @@
                 "✅ Evaluación completada.";
 
 
-            // Liberar URL
+            // Liberar memoria
 
-            URL.revokeObjectURL(url);
+            window.URL.revokeObjectURL(
+                imagenURL
+            );
 
         }
 
@@ -620,7 +654,7 @@
                 confianza * 100;
 
 
-            // Buscar mayor
+            // Buscar mayor probabilidad
 
             if (
                 confianza >
@@ -649,8 +683,7 @@
             div.innerHTML = `
 
                 <strong>
-                    ${nombre}
-                    -
+                    ${nombre}:
                     ${porcentaje.toFixed(2)}%
                 </strong>
 
@@ -680,7 +713,7 @@
 
 
     // =====================================================
-    // RESULTADO PRINCIPAL
+    // MOSTRAR RESULTADO PRINCIPAL
     // =====================================================
 
     function mostrarResultadoPrincipal(
@@ -701,9 +734,9 @@
 
 
         resultado.classList.remove(
-            "verde",
-            "amarillo",
-            "malograda"
+            "resultado-verde",
+            "resultado-amarillo",
+            "resultado-rojo"
         );
 
 
@@ -716,11 +749,12 @@
         if (
             nombre.includes("malograd") ||
             nombre.includes("podrid") ||
-            nombre.includes("dañad")
+            nombre.includes("dañad") ||
+            nombre.includes("dañada")
         ) {
 
             resultado.classList.add(
-                "malograda"
+                "resultado-rojo"
             );
 
 
@@ -743,7 +777,7 @@
         ) {
 
             resultado.classList.add(
-                "verde"
+                "resultado-verde"
             );
 
 
@@ -759,12 +793,12 @@
         }
 
 
-        // SIN MADURAR / OTRA CLASE
+        // SIN MADURAR
 
         else {
 
             resultado.classList.add(
-                "amarillo"
+                "resultado-amarillo"
             );
 
 
@@ -783,7 +817,7 @@
 
 
     // =====================================================
-    // DRAG & DROP
+    // DRAG AND DROP
     // =====================================================
 
     zonaDrop.addEventListener(
@@ -834,8 +868,12 @@
                 event.dataTransfer.files;
 
 
-            if (files.length === 0) {
+            if (
+                files.length === 0
+            ) {
+
                 return;
+
             }
 
 
@@ -848,7 +886,7 @@
 
 
     // =====================================================
-    // CÁMARA
+    // INICIAR CÁMARA
     // =====================================================
 
     async function iniciarCamara() {
@@ -882,9 +920,13 @@
             ejecutando = true;
 
 
+            // Ocultar imagen
+
             imagen.style.display =
                 "none";
 
+
+            // Mostrar cámara
 
             document
                 .getElementById(
@@ -903,7 +945,7 @@
 
 
             estado.innerText =
-                "📷 Cámara activa.";
+                "📷 Cámara activa. Coloca la fruta frente a la cámara.";
 
 
             window.requestAnimationFrame(
@@ -928,7 +970,9 @@
     async function loop() {
 
         if (!ejecutando) {
+
             return;
+
         }
 
 
@@ -985,4 +1029,3 @@
 </body>
 
 </html>
-
