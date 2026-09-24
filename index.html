@@ -2,15 +2,13 @@
 <html lang="es">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Evaluación de Frutas</title>
+    <title>Evaluación de Frutas 🍓</title>
 
-    <!-- TensorFlow.js -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
-
-    <!-- Teachable Machine -->
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
 
     <style>
@@ -21,201 +19,257 @@
 
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #dff5df, #f8fff8);
             min-height: 100vh;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #ffe4ef, #f4e5ff, #e8f5ff);
             padding: 30px 15px;
+            color: #5a4050;
         }
 
         .contenedor {
             width: 100%;
-            max-width: 750px;
+            max-width: 720px;
             margin: auto;
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 35px;
+            border-radius: 30px;
+            box-shadow: 0 15px 45px rgba(190, 100, 150, 0.20);
             text-align: center;
         }
 
-        h1 {
-            color: #2e7d32;
-            margin-bottom: 10px;
+        .corazon {
+            font-size: 45px;
+            margin-bottom: 5px;
         }
 
-        .descripcion {
-            color: #555;
-            margin-bottom: 25px;
+        h1 {
+            margin: 0;
+            color: #c05283;
+            font-size: 34px;
+            font-weight: 700;
+        }
+
+        .subtitulo {
+            margin-top: 10px;
+            color: #8b7180;
+            font-size: 16px;
+            line-height: 1.6;
         }
 
         .botones {
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
             flex-wrap: wrap;
-            margin-bottom: 20px;
+            margin: 25px 0;
         }
 
         button {
-            background-color: #2e7d32;
-            color: white;
             border: none;
-            padding: 13px 22px;
-            border-radius: 10px;
+            padding: 14px 25px;
+            border-radius: 50px;
             font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
+            color: white;
+            background: linear-gradient(135deg, #e66b9a, #c85b91);
+            box-shadow: 0 6px 15px rgba(200, 91, 145, 0.25);
+            transition: 0.25s;
         }
 
         button:hover {
-            background-color: #1b5e20;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(200, 91, 145, 0.35);
         }
-
-        .boton-rojo {
-            background-color: #c62828;
-        }
-
-        .boton-rojo:hover {
-            background-color: #8e0000;
-        }
-
-        /* ZONA PARA ARRASTRAR */
 
         .zona-drop {
-            border: 3px dashed #4caf50;
-            border-radius: 15px;
+            border: 2px dashed #e58bb0;
+            border-radius: 25px;
             padding: 35px 20px;
-            margin: 20px 0;
-            background-color: #f8fff8;
+            background: linear-gradient(135deg, #fff7fb, #faf5ff);
             cursor: pointer;
             transition: 0.3s;
         }
 
         .zona-drop:hover {
-            background-color: #e8f5e9;
+            background: #fff0f7;
+            border-color: #c95788;
+            transform: scale(1.01);
         }
 
         .zona-drop.activa {
-            background-color: #c8e6c9;
-            border-color: #1b5e20;
-        }
-
-        .zona-drop h3 {
-            color: #2e7d32;
+            background: #ffe1ed;
+            border-color: #c05283;
         }
 
         .icono-subir {
-            font-size: 45px;
+            font-size: 50px;
+            margin-bottom: 8px;
         }
 
-        /* IMAGEN */
+        .zona-drop h3 {
+            margin: 8px 0;
+            color: #c05283;
+            font-size: 20px;
+        }
+
+        .zona-drop p {
+            margin: 5px;
+            color: #9a7f8e;
+        }
+
+        .formatos {
+            font-size: 13px;
+            color: #b49aaa !important;
+        }
+
+        #estado {
+            margin: 20px;
+            color: #9a7187;
+            font-size: 15px;
+        }
 
         #imagen {
+            display: none;
             max-width: 100%;
             max-height: 400px;
-            border-radius: 15px;
-            display: none;
             margin: 20px auto;
+            border-radius: 22px;
+            box-shadow: 0 8px 25px rgba(160, 90, 130, 0.18);
         }
 
-        /* CÁMARA */
-
         #webcam-container {
-            margin-top: 20px;
             display: flex;
             justify-content: center;
+            margin-top: 20px;
         }
 
         canvas {
             max-width: 100%;
-            border-radius: 15px;
+            border-radius: 22px;
+            box-shadow: 0 8px 25px rgba(160, 90, 130, 0.18);
         }
 
-        /* RESULTADO */
-
         #resultado {
-            margin-top: 25px;
-            padding: 20px;
-            border-radius: 15px;
-            background-color: #f1f8e9;
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 25px;
+            background: linear-gradient(135deg, #fff5fa, #f9f2ff);
+            border: 1px solid #f3d5e4;
+            box-shadow: 0 8px 25px rgba(190, 100, 150, 0.12);
         }
 
         #resultado h2 {
-            margin-top: 0;
+            margin: 0 0 12px;
+            color: #9b5a7a;
+            font-size: 19px;
         }
 
         #resultadoTexto {
-            font-size: 25px;
-            font-weight: bold;
+            font-size: 28px;
+            font-weight: 700;
+            margin: 10px 0 0;
+        }
+
+        #resultadoTexto small {
+            display: block;
+            margin-top: 8px;
+            font-size: 15px;
+            font-weight: 500;
         }
 
         .resultado-verde {
-            background-color: #e8f5e9 !important;
-            color: #2e7d32;
+            background: linear-gradient(135deg, #e9faef, #f5fff8) !important;
+            border-color: #bce8cb !important;
+            color: #368557;
         }
 
         .resultado-amarillo {
-            background-color: #fff8e1 !important;
-            color: #f57f17;
+            background: linear-gradient(135deg, #fff9e5, #fffdf4) !important;
+            border-color: #f1dda0 !important;
+            color: #b78a22;
         }
 
         .resultado-rojo {
-            background-color: #ffebee !important;
-            color: #c62828;
+            background: linear-gradient(135deg, #fff0f3, #fff7f9) !important;
+            border-color: #f2b9c8 !important;
+            color: #c05270;
         }
 
-        /* PREDICCIONES */
-
         #predicciones {
-            margin-top: 20px;
+            margin-top: 25px;
             text-align: left;
         }
 
         .prediccion {
-            margin: 15px 0;
+            background: #fff9fc;
+            padding: 15px;
+            margin: 12px 0;
+            border-radius: 15px;
+            border: 1px solid #f4e0e9;
+        }
+
+        .nombre-prediccion {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 7px;
+            color: #765666;
+            font-size: 14px;
         }
 
         .barra {
             width: 100%;
-            height: 20px;
-            background-color: #ddd;
-            border-radius: 10px;
+            height: 12px;
+            background: #f0e4eb;
+            border-radius: 20px;
             overflow: hidden;
-            margin-top: 5px;
         }
 
         .progreso {
             height: 100%;
-            background-color: #4caf50;
-            border-radius: 10px;
-            transition: width 0.3s;
-        }
-
-        #estado {
-            margin: 15px;
-            color: #666;
+            border-radius: 20px;
+            background: linear-gradient(90deg, #e982aa, #c85b91);
+            transition: width 0.5s ease;
         }
 
         #error {
-            color: #c62828;
-            background-color: #ffebee;
-            padding: 12px;
-            border-radius: 10px;
             display: none;
-            margin-top: 15px;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 15px;
+            background: #fff0f3;
+            color: #bd4969;
+            border: 1px solid #f0b7c6;
+            font-size: 14px;
+        }
+
+        .pie {
+            margin-top: 25px;
+            color: #b493a4;
+            font-size: 13px;
         }
 
         @media (max-width: 600px) {
 
+            body {
+                padding: 15px 10px;
+            }
+
             .contenedor {
-                padding: 20px;
+                padding: 25px 18px;
+                border-radius: 25px;
             }
 
             h1 {
-                font-size: 25px;
+                font-size: 28px;
             }
 
             button {
                 width: 100%;
+            }
+
+            #resultadoTexto {
+                font-size: 24px;
             }
 
         }
@@ -224,20 +278,22 @@
 
 </head>
 
-
 <body>
 
 <div class="contenedor">
 
-    <h1>🍎 Evaluación de Frutas</h1>
+    <div class="corazon">
+        🍓
+    </div>
 
-    <p class="descripcion">
-        Sube una imagen, arrástrala al área indicada
-        o utiliza la cámara para evaluar el estado de la fruta.
+    <h1>
+        Evaluación de Frutas
+    </h1>
+
+    <p class="subtitulo">
+        Descubre el estado de tu fruta
+        de manera rápida y sencilla ✨
     </p>
-
-
-    <!-- BOTONES -->
 
     <div class="botones">
 
@@ -249,11 +305,7 @@
             📷 Usar cámara
         </button>
 
-
     </div>
-
-
-    <!-- INPUT DE IMAGEN -->
 
     <input
         type="file"
@@ -262,57 +314,45 @@
         style="display:none"
     >
 
-
-    <!-- ZONA DRAG AND DROP -->
-
     <div
         id="zonaDrop"
-        class="zona-drop">
+        class="zona-drop"
+    >
 
         <div class="icono-subir">
             📤
         </div>
 
         <h3>
-            Arrastra una imagen aquí
+            Arrastra tu imagen aquí
         </h3>
 
         <p>
-            o haz clic para seleccionar una imagen
+            o haz clic para seleccionar una foto
         </p>
 
-        <p>
-            JPG · PNG · JPEG · WEBP
+        <p class="formatos">
+            JPG · JPEG · PNG · WEBP
         </p>
 
     </div>
 
-
-    <!-- ESTADO -->
-
     <p id="estado">
-        Esperando una imagen...
+        Esperando una imagen... 🌷
     </p>
-
-
-    <!-- IMAGEN SUBIDA -->
 
     <img
         id="imagen"
-        alt="Imagen de la fruta"
+        alt="Imagen de fruta"
     >
-
-
-    <!-- CÁMARA -->
 
     <div id="webcam-container"></div>
 
-
-    <!-- RESULTADO -->
-
     <div id="resultado">
 
-        <h2>Resultado</h2>
+        <h2>
+            ✨ Resultado de la evaluación
+        </h2>
 
         <p id="resultadoTexto">
             Esperando una fruta...
@@ -320,670 +360,499 @@
 
     </div>
 
-
-    <!-- PORCENTAJES -->
-
     <div id="predicciones"></div>
 
-
-    <!-- ERROR -->
-
     <div id="error"></div>
+
+    <div class="pie">
+        Hecho con 💕 y tecnología de inteligencia artificial
+    </div>
 
 </div>
 
 
 <script>
 
-    // =====================================================
-    // CONFIGURACIÓN DEL MODELO
-    // =====================================================
+const MODEL_URL =
+    "https://teachablemachine.withgoogle.com/models/Gezzx2Ug_/";
 
-    const MODEL_URL =
-        "https://teachablemachine.withgoogle.com/models/Gezzx2Ug_/";
+let model = null;
 
+let maxPredictions = 0;
 
-    let model = null;
+let webcam = null;
 
-    let maxPredictions = 0;
+let ejecutando = false;
 
-    let webcam = null;
+const archivo =
+    document.getElementById("archivo");
 
-    let ejecutando = false;
+const zonaDrop =
+    document.getElementById("zonaDrop");
 
+const imagen =
+    document.getElementById("imagen");
 
-    // =====================================================
-    // ELEMENTOS
-    // =====================================================
+const estado =
+    document.getElementById("estado");
 
-    const archivo =
-        document.getElementById("archivo");
-
-    const zonaDrop =
-        document.getElementById("zonaDrop");
-
-    const imagen =
-        document.getElementById("imagen");
-
-    const estado =
-        document.getElementById("estado");
-
-    const errorElemento =
-        document.getElementById("error");
+const errorElemento =
+    document.getElementById("error");
 
 
-    // =====================================================
-    // MOSTRAR ERROR
-    // =====================================================
+function mostrarError(error) {
 
-    function mostrarError(error) {
+    console.error(error);
 
-        console.error(error);
+    errorElemento.style.display =
+        "block";
 
-        errorElemento.style.display = "block";
+    errorElemento.innerText =
+        "Error: " + error.message;
 
-        errorElemento.innerText =
-            "Error: " + error.message;
+    estado.innerText =
+        "No se pudo analizar la imagen.";
 
-        estado.innerText =
-            "No se pudo analizar la imagen.";
+}
 
+
+async function cargarModelo() {
+
+    if (model !== null) {
+        return;
     }
 
+    estado.innerText =
+        "✨ Cargando inteligencia artificial...";
 
-    // =====================================================
-    // CARGAR MODELO
-    // =====================================================
+    const modelURL =
+        MODEL_URL + "model.json";
 
-    async function cargarModelo() {
+    const metadataURL =
+        MODEL_URL + "metadata.json";
 
-        if (model !== null) {
-            return;
-        }
-
-
-        estado.innerText =
-            "Cargando modelo de inteligencia artificial...";
-
-
-        const modelURL =
-            MODEL_URL + "model.json";
-
-        const metadataURL =
-            MODEL_URL + "metadata.json";
-
-
-        model = await tmImage.load(
+    model =
+        await tmImage.load(
             modelURL,
             metadataURL
         );
 
+    maxPredictions =
+        model.getTotalClasses();
 
-        maxPredictions =
-            model.getTotalClasses();
+}
 
 
-        console.log(
-            "Modelo cargado correctamente."
-        );
+function seleccionarImagen() {
 
-        console.log(
-            "Número de clases:",
-            maxPredictions
-        );
+    archivo.click();
 
-        console.log(
-            "Clases:",
-            model.getClassLabels()
-        );
+}
 
-    }
 
+archivo.addEventListener(
+    "change",
+    function(event) {
 
-    // =====================================================
-    // SELECCIONAR IMAGEN
-    // =====================================================
+        const file =
+            event.target.files[0];
 
-    function seleccionarImagen() {
-
-        archivo.click();
-
-    }
-
-
-    archivo.addEventListener(
-        "change",
-        function(event) {
-
-            const file =
-                event.target.files[0];
-
-            if (file) {
-
-                procesarImagen(file);
-
-            }
-
-        }
-    );
-
-
-    // =====================================================
-    // PROCESAR IMAGEN
-    // =====================================================
-
-    async function procesarImagen(file) {
-
-        try {
-
-            errorElemento.style.display =
-                "none";
-
-
-            if (!file.type.startsWith("image/")) {
-
-                throw new Error(
-                    "El archivo seleccionado no es una imagen."
-                );
-
-            }
-
-
-            // Detener cámara
-
-            detenerCamara();
-
-
-            // Cargar modelo
-
-            await cargarModelo();
-
-
-            estado.innerText =
-                "Cargando imagen...";
-
-
-            // Crear URL de la imagen
-
-            const imagenURL =
-                window.URL.createObjectURL(file);
-
-
-            imagen.src =
-                imagenURL;
-
-
-            imagen.style.display =
-                "block";
-
-
-            // Esperar a que cargue
-
-            await new Promise(
-                function(resolve, reject) {
-
-                    imagen.onload = resolve;
-
-                    imagen.onerror = function() {
-
-                        reject(
-                            new Error(
-                                "No se pudo cargar la imagen."
-                            )
-                        );
-
-                    };
-
-                }
-            );
-
-
-            estado.innerText =
-                "🤖 Analizando fruta...";
-
-
-            // =================================================
-            // CREAR CANVAS
-            // =================================================
-
-            const canvas =
-                document.createElement("canvas");
-
-
-            const contexto =
-                canvas.getContext("2d");
-
-
-            const ancho =
-                imagen.naturalWidth;
-
-            const alto =
-                imagen.naturalHeight;
-
-
-            canvas.width =
-                ancho;
-
-            canvas.height =
-                alto;
-
-
-            contexto.drawImage(
-                imagen,
-                0,
-                0,
-                ancho,
-                alto
-            );
-
-
-            // =================================================
-            // REALIZAR PREDICCIÓN
-            // =================================================
-
-            const predicciones =
-                await model.predict(canvas);
-
-
-            mostrarResultados(
-                predicciones
-            );
-
-
-            estado.innerText =
-                "✅ Evaluación completada.";
-
-
-            // Liberar memoria
-
-            window.URL.revokeObjectURL(
-                imagenURL
-            );
-
-        }
-
-        catch(error) {
-
-            mostrarError(error);
-
+        if (file) {
+            procesarImagen(file);
         }
 
     }
+);
 
 
-    // =====================================================
-    // MOSTRAR RESULTADOS
-    // =====================================================
+async function procesarImagen(file) {
 
-    function mostrarResultados(predicciones) {
+    try {
 
-        let claseMayor = "";
+        errorElemento.style.display =
+            "none";
 
-        let confianzaMayor = 0;
-
-
-        const contenedor =
-            document.getElementById(
-                "predicciones"
-            );
-
-
-        contenedor.innerHTML = "";
-
-
-        for (
-            let i = 0;
-            i < predicciones.length;
-            i++
+        if (
+            !file.type.startsWith("image/")
         ) {
 
-            const nombre =
-                predicciones[i].className;
+            throw new Error(
+                "Selecciona un archivo de imagen."
+            );
 
+        }
 
-            const confianza =
-                predicciones[i].probability;
+        const imagenURL =
+            window.URL.createObjectURL(file);
 
+        imagen.src =
+            imagenURL;
 
-            const porcentaje =
-                confianza * 100;
+        imagen.style.display =
+            "block";
 
+        detenerCamara();
 
-            // Buscar mayor probabilidad
+        await cargarModelo();
 
-            if (
-                confianza >
-                confianzaMayor
-            ) {
+        estado.innerText =
+            "🔍 Analizando tu fruta...";
 
-                confianzaMayor =
-                    confianza;
+        await new Promise(
+            function(resolve, reject) {
 
-                claseMayor =
-                    nombre;
+                if (imagen.complete) {
+                    resolve();
+                }
+                else {
+                    imagen.onload = resolve;
+                    imagen.onerror = reject;
+                }
 
             }
+        );
+
+        const canvas =
+            document.createElement("canvas");
+
+        const contexto =
+            canvas.getContext("2d");
+
+        canvas.width =
+            imagen.naturalWidth;
+
+        canvas.height =
+            imagen.naturalHeight;
+
+        contexto.drawImage(
+            imagen,
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+        const predicciones =
+            await model.predict(canvas);
+
+        mostrarResultados(
+            predicciones
+        );
+
+        estado.innerText =
+            "💕 Evaluación completada";
+
+        window.URL.revokeObjectURL(
+            imagenURL
+        );
+
+    }
+
+    catch(error) {
+
+        mostrarError(error);
+
+    }
+
+}
 
 
-            // Crear barra
+function mostrarResultados(
+    predicciones
+) {
 
-            const div =
-                document.createElement("div");
+    let claseMayor = "";
 
+    let confianzaMayor = 0;
 
-            div.className =
-                "prediccion";
+    const contenedor =
+        document.getElementById(
+            "predicciones"
+        );
 
+    contenedor.innerHTML =
+        "";
 
-            div.innerHTML = `
+    for (
+        let i = 0;
+        i < predicciones.length;
+        i++
+    ) {
+
+        const nombre =
+            predicciones[i].className;
+
+        const confianza =
+            predicciones[i].probability;
+
+        const porcentaje =
+            confianza * 100;
+
+        if (
+            confianza >
+            confianzaMayor
+        ) {
+
+            confianzaMayor =
+                confianza;
+
+            claseMayor =
+                nombre;
+
+        }
+
+        const div =
+            document.createElement(
+                "div"
+            );
+
+        div.className =
+            "prediccion";
+
+        div.innerHTML = `
+
+            <div class="nombre-prediccion">
+
+                <span>
+                    ${nombre}
+                </span>
 
                 <strong>
-                    ${nombre}:
                     ${porcentaje.toFixed(2)}%
                 </strong>
 
-                <div class="barra">
+            </div>
 
-                    <div
-                        class="progreso"
-                        style="width:${porcentaje}%">
-                    </div>
+            <div class="barra">
 
+                <div
+                    class="progreso"
+                    style="width:${porcentaje}%">
                 </div>
 
-            `;
+            </div>
 
+        `;
 
-            contenedor.appendChild(div);
-
-        }
-
-
-        mostrarResultadoPrincipal(
-            claseMayor,
-            confianzaMayor
+        contenedor.appendChild(
+            div
         );
 
     }
 
+    mostrarResultadoPrincipal(
+        claseMayor,
+        confianzaMayor
+    );
 
-    // =====================================================
-    // MOSTRAR RESULTADO PRINCIPAL
-    // =====================================================
+}
 
-    function mostrarResultadoPrincipal(
-        clase,
-        confianza
+
+function mostrarResultadoPrincipal(
+    clase,
+    confianza
+) {
+
+    const resultado =
+        document.getElementById(
+            "resultado"
+        );
+
+    const texto =
+        document.getElementById(
+            "resultadoTexto"
+        );
+
+    resultado.classList.remove(
+        "resultado-verde",
+        "resultado-amarillo",
+        "resultado-rojo"
+    );
+
+    const nombre =
+        clase.toLowerCase();
+
+
+    if (
+        nombre.includes("malograd") ||
+        nombre.includes("podrid") ||
+        nombre.includes("dañad") ||
+        nombre.includes("dañado")
     ) {
 
-        const resultado =
-            document.getElementById(
-                "resultado"
-            );
-
-
-        const texto =
-            document.getElementById(
-                "resultadoTexto"
-            );
-
-
-        resultado.classList.remove(
-            "resultado-verde",
-            "resultado-amarillo",
+        resultado.classList.add(
             "resultado-rojo"
         );
 
+        texto.innerHTML = `
 
-        const nombre =
-            clase.toLowerCase();
+            🔴 ${clase}
 
-
-        // MALOGRADA
-
-        if (
-            nombre.includes("malograd") ||
-            nombre.includes("podrid") ||
-            nombre.includes("dañad") ||
-            nombre.includes("dañada")
-        ) {
-
-            resultado.classList.add(
-                "resultado-rojo"
-            );
-
-
-            texto.innerHTML = `
-                🔴 ${clase}
+            <small>
+                La fruta presenta signos
+                de deterioro.
                 <br>
-                <small>
-                    Confianza:
-                    ${(confianza * 100).toFixed(2)}%
-                </small>
-            `;
+                Confianza:
+                ${(confianza * 100).toFixed(2)}%
+            </small>
 
-        }
-
-
-        // VERDE
-
-        else if (
-            nombre.includes("verde")
-        ) {
-
-            resultado.classList.add(
-                "resultado-verde"
-            );
-
-
-            texto.innerHTML = `
-                🟢 ${clase}
-                <br>
-                <small>
-                    Confianza:
-                    ${(confianza * 100).toFixed(2)}%
-                </small>
-            `;
-
-        }
-
-
-        // SIN MADURAR
-
-        else {
-
-            resultado.classList.add(
-                "resultado-amarillo"
-            );
-
-
-            texto.innerHTML = `
-                🟡 ${clase}
-                <br>
-                <small>
-                    Confianza:
-                    ${(confianza * 100).toFixed(2)}%
-                </small>
-            `;
-
-        }
+        `;
 
     }
 
+    else if (
+        nombre.includes("verde")
+    ) {
 
-    // =====================================================
-    // DRAG AND DROP
-    // =====================================================
+        resultado.classList.add(
+            "resultado-verde"
+        );
 
-    zonaDrop.addEventListener(
-        "click",
-        seleccionarImagen
-    );
+        texto.innerHTML = `
 
+            🟢 ${clase}
 
-    zonaDrop.addEventListener(
-        "dragover",
-        function(event) {
+            <small>
+                La fruta está verde.
+                <br>
+                Confianza:
+                ${(confianza * 100).toFixed(2)}%
+            </small>
 
-            event.preventDefault();
+        `;
 
-            zonaDrop.classList.add(
-                "activa"
-            );
+    }
 
-        }
-    );
+    else {
 
+        resultado.classList.add(
+            "resultado-amarillo"
+        );
 
-    zonaDrop.addEventListener(
-        "dragleave",
-        function() {
+        texto.innerHTML = `
 
-            zonaDrop.classList.remove(
-                "activa"
-            );
+            🟡 ${clase}
 
-        }
-    );
+            <small>
+                La fruta todavía
+                no está madura.
+                <br>
+                Confianza:
+                ${(confianza * 100).toFixed(2)}%
+            </small>
 
+        `;
 
-    zonaDrop.addEventListener(
-        "drop",
-        function(event) {
+    }
 
-            event.preventDefault();
-
-
-            zonaDrop.classList.remove(
-                "activa"
-            );
-
-
-            const files =
-                event.dataTransfer.files;
+}
 
 
-            if (
-                files.length === 0
-            ) {
+zonaDrop.addEventListener(
+    "click",
+    seleccionarImagen
+);
 
-                return;
 
-            }
+zonaDrop.addEventListener(
+    "dragover",
+    function(event) {
 
+        event.preventDefault();
+
+        zonaDrop.classList.add(
+            "activa"
+        );
+
+    }
+);
+
+
+zonaDrop.addEventListener(
+    "dragleave",
+    function() {
+
+        zonaDrop.classList.remove(
+            "activa"
+        );
+
+    }
+);
+
+
+zonaDrop.addEventListener(
+    "drop",
+    function(event) {
+
+        event.preventDefault();
+
+        zonaDrop.classList.remove(
+            "activa"
+        );
+
+        const files =
+            event.dataTransfer.files;
+
+        if (
+            files.length > 0
+        ) {
 
             procesarImagen(
                 files[0]
             );
 
         }
-    );
-
-
-    // =====================================================
-    // INICIAR CÁMARA
-    // =====================================================
-
-    async function iniciarCamara() {
-
-        try {
-
-            errorElemento.style.display =
-                "none";
-
-
-            await cargarModelo();
-
-
-            estado.innerText =
-                "Solicitando acceso a la cámara...";
-
-
-            webcam =
-                new tmImage.Webcam(
-                    400,
-                    400,
-                    true
-                );
-
-
-            await webcam.setup();
-
-            await webcam.play();
-
-
-            ejecutando = true;
-
-
-            // Ocultar imagen
-
-            imagen.style.display =
-                "none";
-
-
-            // Mostrar cámara
-
-            document
-                .getElementById(
-                    "webcam-container"
-                )
-                .innerHTML = "";
-
-
-            document
-                .getElementById(
-                    "webcam-container"
-                )
-                .appendChild(
-                    webcam.canvas
-                );
-
-
-            estado.innerText =
-                "📷 Cámara activa. Coloca la fruta frente a la cámara.";
-
-
-            window.requestAnimationFrame(
-                loop
-            );
-
-        }
-
-        catch(error) {
-
-            mostrarError(error);
-
-        }
 
     }
+);
 
 
-    // =====================================================
-    // LOOP DE CÁMARA
-    // =====================================================
+async function iniciarCamara() {
 
-    async function loop() {
+    try {
 
-        if (!ejecutando) {
+        errorElemento.style.display =
+            "none";
 
-            return;
+        await cargarModelo();
 
-        }
+        estado.innerText =
+            "📷 Activando cámara...";
 
+        webcam =
+            new tmImage.Webcam(
+                400,
+                400,
+                true
+            );
 
-        webcam.update();
+        await webcam.setup();
 
+        await webcam.play();
 
-        const predicciones =
-            await model.predict(
+        ejecutando =
+            true;
+
+        imagen.style.display =
+            "none";
+
+        document
+            .getElementById(
+                "webcam-container"
+            )
+            .innerHTML =
+            "";
+
+        document
+            .getElementById(
+                "webcam-container"
+            )
+            .appendChild(
                 webcam.canvas
             );
 
-
-        mostrarResultados(
-            predicciones
-        );
-
+        estado.innerText =
+            "📷 Mira tu fruta frente a la cámara";
 
         window.requestAnimationFrame(
             loop
@@ -991,35 +860,57 @@
 
     }
 
+    catch(error) {
 
-    // =====================================================
-    // DETENER CÁMARA
-    // =====================================================
-
-    function detenerCamara() {
-
-        ejecutando = false;
-
-
-        if (webcam) {
-
-            webcam.stop();
-
-            webcam = null;
-
-        }
-
-
-        document
-            .getElementById(
-                "webcam-container"
-            )
-            .innerHTML = "";
+        mostrarError(error);
 
     }
 
-</script>
+}
 
+
+async function loop() {
+
+    if (!ejecutando) {
+        return;
+    }
+
+    webcam.update();
+
+    const predicciones =
+        await model.predict(
+            webcam.canvas
+        );
+
+    mostrarResultados(
+        predicciones
+    );
+
+    window.requestAnimationFrame(
+        loop
+    );
+
+}
+function detenerCamara() {
+    ejecutando =
+        false;
+    if (webcam) {
+
+        webcam.stop();
+        webcam = null;
+
+    }
+
+    document
+        .getElementById(
+            "webcam-container"
+        )
+        .innerHTML =
+        "";
+
+}
+
+</script>
 
 </body>
 
